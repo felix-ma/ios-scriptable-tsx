@@ -17,7 +17,7 @@ var URLSchemeFrom
 ;(function (URLSchemeFrom2) {
   URLSchemeFrom2['WIDGET'] = 'widget'
 })(URLSchemeFrom || (URLSchemeFrom = {}))
-var port = 9090
+var port = 9091
 
 // src/lib/help.ts
 function fm() {
@@ -614,7 +614,7 @@ var Basic = class {
         inputItems: [
           {
             placeholder: '输入远程文件地址',
-            text: _remoteFileAddress || `http://192.168.1.3:${port}/index.js`,
+            text: _remoteFileAddress || `http://192.168.3.74:${port}/index.js`,
           },
         ],
       })
@@ -697,48 +697,49 @@ ${scriptText}`
     }
   }
   getRewriteConsoleCode(serverApi) {
-    return `
-// 保留日志原始打印方法
-const __log__ = console.log;
-const __warn__ = console.warn;
-const __error__ = console.error;
+    // return
+    // 保留日志原始打印方法
+    const __log__ = console.log
+    const __warn__ = console.warn
+    const __error__ = console.error
 
-/**发到日志远程控制台*/
-const __sendLogToRemote__ = async (type = 'log', data = '') => {
-  const req = new Request('${serverApi}/console');
-  req.method = 'POST';
-  req.headers = {
-    'Content-Type': 'application/json',
-  };
-  req.body = JSON.stringify({
-    type,
-    data,
-  });
-  return await req.loadJSON()
-}
+    /**发到日志远程控制台*/
+    const __sendLogToRemote__ = async (type = 'log', data = '') => {
+      const req = new Request('${serverApi}/console')
+      req.method = 'POST'
+      req.headers = {
+        'Content-Type': 'application/json',
+      }
+      req.body = JSON.stringify({
+        type,
+        data,
+      })
+      return await req.loadJSON()
+    }
 
-/**存储上个console 的promise*/
-let __lastConsole__ = Promise.resolve()
+    /**存储上个console 的promise*/
+    let __lastConsole__ = Promise.resolve()
 
-/**重写生成日志函数*/
-const __generateLog__ = (type = 'log', oldFunc) => {
-  return function(...args) {
-    /**为了同步打印，finally 兼容性太差*/
-    __lastConsole__.then(() => {
-      __lastConsole__ = __sendLogToRemote__(type, args[0]).catch(err => {})
-    }).catch(() => {
-      __lastConsole__ = __sendLogToRemote__(type, args[0]).catch(err => {})
-    })
-    oldFunc.apply(this, args);
-  }
-};
-if (!console.__rewrite__) {
-  console.log = __generateLog__('log', __log__).bind(console);
-  console.warn = __generateLog__('warn', __warn__).bind(console);
-  console.error = __generateLog__('error', __error__).bind(console);
-}
-console.__rewrite__ = true;
-    `
+    /**重写生成日志函数*/
+    const __generateLog__ = (type = 'log', oldFunc) => {
+      return function (...args) {
+        /**为了同步打印，finally 兼容性太差*/
+        __lastConsole__
+          .then(() => {
+            __lastConsole__ = __sendLogToRemote__(type, args[0]).catch(err => {})
+          })
+          .catch(() => {
+            __lastConsole__ = __sendLogToRemote__(type, args[0]).catch(err => {})
+          })
+        oldFunc.apply(this, args)
+      }
+    }
+    if (!console.__rewrite__) {
+      console.log = __generateLog__('log', __log__).bind(console)
+      console.warn = __generateLog__('warn', __warn__).bind(console)
+      console.error = __generateLog__('error', __error__).bind(console)
+    }
+    console.__rewrite__ = true
   }
 }
 new Basic().init()

@@ -23,10 +23,10 @@ const encrypt = process.env.NODE_ENV === 'production'
 /**往编译后的代码头部插入的代码*/
 const header = `
 /**
- * 作者: 小明
+ * 作者: 糖醋小排骨
  * 版本: 1.0.0
  * 更新时间：${new Date().toLocaleDateString()}
- * github: https://github.com/2214962083/ios-scriptable-tsx
+ * github: https://github.com/felix-ma/ios-scriptable-tsx
  */
 `
 

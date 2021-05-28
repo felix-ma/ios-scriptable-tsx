@@ -146,7 +146,7 @@ class Basic {
         inputItems: [
           {
             placeholder: '输入远程文件地址',
-            text: _remoteFileAddress || `http://192.168.1.3:${port}/index.js`,
+            text: _remoteFileAddress || `http://192.168.3.74:${port}/index.js`,
           },
         ],
       })
@@ -263,7 +263,7 @@ class Basic {
   }
   /**
    * 获取重写 console 的方法
-   * @param serverApi 远程链接api地址，如 http://192.168.2.4:9090
+   * @param serverApi 远程链接api地址，如 http://192.168.2.4:9091
    */
   getRewriteConsoleCode(serverApi: string) {
     return `

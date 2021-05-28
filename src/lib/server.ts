@@ -40,7 +40,8 @@ export function createServer(params: CreateServerParams): {serverApi: string} {
   const app = express()
 
   /** server api 地址*/
-  const serverApi = `http://${ip.address('public')}:${port}`
+  // const serverApi = `http://${ip.address('public')}:${port}`
+  const serverApi = `http://192.168.3.74:${port}`
 
   // 解析请求参数
   app.use(
